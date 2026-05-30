@@ -1,0 +1,11 @@
+build/
+cmake-build-*/
+.vscode/
+.idea/
+*.user
+*.log
+*.xml
+*.gcda
+*.gcno
+*.gcov
+coverage/

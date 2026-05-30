@@ -1,0 +1,46 @@
+name: gtest-cpp-calculator-ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Debug, Release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} --parallel
+
+      - name: Run tests with CTest
+        run: ctest --test-dir build --build-config ${{ matrix.build_type }} --output-on-failure
+
+      - name: Run GoogleTest directly with XML report
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            ./build/${{ matrix.build_type }}/calculator_tests.exe --gtest_output=xml:build/gtest-report.xml
+          else
+            ./build/calculator_tests --gtest_output=xml:build/gtest-report.xml
+          fi
+
+      - name: Upload GoogleTest XML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gtest-report-${{ matrix.os }}-${{ matrix.build_type }}
+          path: build/gtest-report.xml
