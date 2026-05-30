@@ -13,7 +13,7 @@ using demo::OperationService;
 using ::testing::InSequence;
 using ::testing::StrictMock;
 
-class MockAuditSinkForCollaboration final : public AuditSink {
+class MockAuditSinkForCollaboration : public AuditSink {
 public:
     MOCK_METHOD(void, notifySuccess, (const std::string& expression, int result), (override));
     MOCK_METHOD(void, notifyFailure, (const std::string& expression, const std::string& reason), (override));
