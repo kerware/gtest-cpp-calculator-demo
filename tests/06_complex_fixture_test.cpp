@@ -20,7 +20,7 @@ using ::testing::StrictMock;
 
 namespace {
 
-class MockAuditSink final : public AuditSink {
+class MockAuditSink : public AuditSink {
 public:
     MOCK_METHOD(void, notifySuccess, (const std::string& expression, int result), (override));
     MOCK_METHOD(void, notifyFailure, (const std::string& expression, const std::string& reason), (override));
